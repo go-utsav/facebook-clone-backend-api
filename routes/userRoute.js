@@ -3,6 +3,7 @@ var router = express.Router();
 const { signUp, signIn } = require('./../controller/userController');
 const { createPost, deletePost } = require('./../controller/postController');
 const { addComment, deleteComment } = require('./../controller/commentsController');
+const { feed } = require('./../controller/feedController');
 const jwt = require('jsonwebtoken');
 
 const auth = ((req, res, next) => {
@@ -28,11 +29,14 @@ const auth = ((req, res, next) => {
 
 
 /* GET users listing. */
+
+router.get('/', feed);
 router.post('/signup', signUp);
 router.post('/signin', signIn);
 router.post('/createpost', auth, createPost);
 router.post('/deletepost', auth, deletePost);
 router.post('/addcomment', auth, addComment);
 router.post('/deleteComment', auth, deleteComment);
+
 
 module.exports = router;
