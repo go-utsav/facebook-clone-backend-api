@@ -30,7 +30,7 @@ const auth = ((req, res, next) => {
 
 /* GET users listing. */
 
-router.get('/', feed);
+router.get('/feed', feed);
 router.post('/signup', signUp);
 router.post('/signin', signIn);
 router.post('/createpost', auth, createPost);
