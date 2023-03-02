@@ -4,39 +4,22 @@ const { signUp, signIn } = require('./../controller/userController');
 const { createPost, deletePost } = require('./../controller/postController');
 const { addComment, deleteComment } = require('./../controller/commentsController');
 const { feed } = require('./../controller/feedController');
-const jwt = require('jsonwebtoken');
-
-const auth = ((req, res, next) => {
-    try {
-        const token = req.headers.authorization.split(' ')[1];
-        const verify = jwt.verify(token.toString(), process.env.ACCESS_KEY_TOKEN);
-        if (verify) {
-            next();
-        } else {
-            return res.json({
-                status: 'error',
-                message: 'Unauthorized access'
-            })
-        }
-    } catch (err) {
-        console.error(err);
-        return res.json({
-            status: 'error',
-            message: 'internal server error '
-        })
-    }
-});
-
+const { searchUser } = require('./../controller/searchUserController');
+const authMiddleware = require('./../util/middleware/authMiddleware');
+const { followUser, unfollowUser } = require('./../controller/followController');
 
 /* GET users listing. */
 
 router.get('/feed', feed);
 router.post('/signup', signUp);
 router.post('/signin', signIn);
-router.post('/createpost', auth, createPost);
-router.post('/deletepost', auth, deletePost);
-router.post('/addcomment', auth, addComment);
-router.post('/deleteComment', auth, deleteComment);
+router.post('/createpost', authMiddleware, createPost);
+router.post('/deletepost', authMiddleware, deletePost);
+router.post('/addcomment', authMiddleware, addComment);
+router.post('/deleteComment', authMiddleware, deleteComment);
+router.post('/searchuser', authMiddleware, searchUser);
+router.post('/follow', authMiddleware, followUser);
+router.post('/unfollow', authMiddleware, unfollowUser);
 
 
 module.exports = router;

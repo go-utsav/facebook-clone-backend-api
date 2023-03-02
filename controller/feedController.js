@@ -13,24 +13,25 @@ exports.feed = async (req, res) => {
         const postTitle = await db.posts.findAll({});
         const postarray = JSON.stringify(postTitle);
         const cleandata = JSON.parse(postarray);
+        console.log(cleandata.length);
         // const cleandata = JSON.parse(JSON.stringify(postTitle));
         // // console.log(postTitle.toString());
 
         // const cleanComment = JSON.parse(JSON.stringify(CommentTitle));
         for (let i = 0; i < postarray.length; i++) {
+            console.log(i);
 
             //username
-            const username = await db.users.findOne({ id: cleandata[i].user_id });
+            const username = await db.users.findOne({ where: { id: cleandata[i].user_id } });
             const cleanUserdata = JSON.parse(JSON.stringify(username));
             const name = cleanUserdata.firstname + " " + cleanUserdata.lastname;
 
             //comment 
             const rawcomment = await db.comments.findAll({ where: { post_id: cleandata[i].id } })
             const cleancommentdata = JSON.parse(JSON.stringify(rawcomment));
-            console.log(cleancommentdata);
 
             //comment username
-            const Cusername = await db.users.findOne({ id: cleancommentdata.user_id });
+            const Cusername = await db.users.findOne({ where: { id: cleancommentdata[i].user_id } });
             const CcleanUserdata = JSON.parse(JSON.stringify(Cusername));
             const Cname = CcleanUserdata.firstname + " " + CcleanUserdata.lastname;
 
@@ -42,8 +43,7 @@ exports.feed = async (req, res) => {
                     "comment": {
                         "username": Cname,
                         "text": cleancommentdata[i].caption
-                    }   
-                    // "comments": cleanComment[i].caption
+                    }
                 }
             });
         }
