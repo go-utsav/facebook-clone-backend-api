@@ -1,11 +1,11 @@
-const db = require('./../models');
+const db = require("./../models");
 async function getdata(myid) {
     const rawdata = await db.users.findOne({ where: { id: myid } });
     const clendata = JSON.parse(JSON.stringify(rawdata));
-    return clendata.firstname + ' ' + clendata.lastname;
+    return clendata.firstname + " " + clendata.lastname;
 }
 /**
- * follow user 
+ * follow user
  * @param {*} req
  * @param {*} res
  * @request
@@ -15,35 +15,35 @@ exports.followUser = async function (req, res) {
         const targertuser = await getdata(req.params.id);
         const finduser = await db.followers.findOne({
             userid: req.user_id,
-            targetuserid: req.params.id
+            targetuserid: req.params.id,
         });
         if (finduser) {
             return res.json({
-                status: 'success',
-                message: req.name + ' is aleady following the user ' + targertuser
-            })
+                status: "success",
+                message: req.name + " is aleady following the user " + targertuser,
+            });
         } else {
             const user = await db.followers.create({
                 userid: req.user_id,
-                targetuserid: req.params.id
+                targetuserid: req.params.id,
             });
 
             return res.json({
-                status: 'success',
-                message: req.name + ' started following ' + targertuser
+                status: "success",
+                message: req.name + " started following " + targertuser,
             });
         }
     } catch (e) {
         console.error(e);
         return res.json({
-            status: 'error',
-            message: 'internal server error'
+            status: "error",
+            message: "internal server error",
         });
     }
-}
+};
 
 /**
- * follow user 
+ * follow user
  * @param {*} req
  * @param {*} res
  * @request
@@ -54,20 +54,19 @@ exports.unfollowUser = async function (req, res) {
         const user = await db.followers.destroy({
             where: {
                 userid: req.user_id,
-                targetuserid: req.params.id
-            }
+                targetuserid: req.params.id,
+            },
         });
 
         return res.json({
-            status: 'success',
-            message: req.name + ' has unfollowed ' + targertuser
+            status: "success",
+            message: req.name + " has unfollowed " + targertuser,
         });
-
     } catch (e) {
         console.error(e);
         return res.json({
-            status: 'error',
-            message: 'internal server error'
+            status: "error",
+            message: "internal server error",
         });
     }
-}
+};

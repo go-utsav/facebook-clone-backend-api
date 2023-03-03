@@ -5,8 +5,8 @@ const { feed } = require("./../controller/feedController");
 const { searchUser } = require("./../controller/searchUserController");
 const authMiddleware = require("./../util/middleware/authMiddleware");
 const {
-    followUser,
-    unfollowUser,
+  followUser,
+  unfollowUser,
 } = require("./../controller/followController");
 
 /* GET users listing. */

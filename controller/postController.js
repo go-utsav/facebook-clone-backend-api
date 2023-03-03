@@ -37,7 +37,7 @@ exports.createPost = async function (req, res) {
  */
 exports.deletePost = async function (req, res) {
     try {
-        // we will  later set condition for user can only delete commment done by that user not any external user 
+        // we will  later set condition for user can only delete commment done by that user not any external user
         const newpost = db.posts.destroy({ where: { user_id: req.params.id } });
         return res.json({
             status: "success",
