@@ -1,4 +1,5 @@
 const db = require("./../models");
+const { Op } = require("sequelize");
 
 /**
  * search user
@@ -9,22 +10,40 @@ const db = require("./../models");
 
 exports.searchUser = async function (req, res) {
     try {
-        //
-        const user = await db.users.findAll({
+        // or query to find username if first name and last name are swapped
+        // const user = await db.users.findAll({
+        //     where: {
+        //         [Op.or]: [
+        //             { firstname: req.body.firstname, lastname: req.body.lastname },
+        //             { firstname: req.body.lastname, lastname: req.body.firstname }
+        //         ]
+        //     },
+        // });
+
+        // like query to find username
+        const username = await db.users.findAll({
             where: {
-                firstname: req.body.search,
-                lastname: req.body.search,
-            },
+                [Op.or]: [
+                    {
+                        firstname: { [Op.like]: `%` + req.body.firstname + `%` },
+                        lastname: { [Op.like]: `%` + req.body.lastname + `%` }
+                    }
+                ]
+            }
         });
-        if (!user) {
+
+
+
+        if (!username) {
             return res.json({
                 status: "success",
                 data: "no user found",
             });
         } else {
+
             return res.json({
                 status: "success",
-                data: user,
+                data: username,
             });
         }
     } catch (e) {

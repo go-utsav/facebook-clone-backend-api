@@ -13,14 +13,18 @@ async function getdata(myid) {
 exports.followUser = async function (req, res) {
     try {
         const targertuser = await getdata(req.params.id);
+
         const finduser = await db.followers.findOne({
-            userid: req.user_id,
-            targetuserid: req.params.id,
+            where: {
+                userid: req.user_id,
+                targetuserid: req.params.id,
+            }
         });
+
         if (finduser) {
             return res.json({
                 status: "success",
-                message: req.name + " is aleady following the user " + targertuser,
+                message: req.name + " is allready following the user " + targertuser,
             });
         } else {
             const user = await db.followers.create({
