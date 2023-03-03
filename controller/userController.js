@@ -28,7 +28,8 @@ exports.signUp = async function (req, res) {
             status: 'success',
             message: 'user registed successfully',
             data: {
-                user: createuser
+                user: createuser,
+                token: token,
             }
         })
 

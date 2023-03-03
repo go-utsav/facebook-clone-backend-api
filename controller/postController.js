@@ -1,44 +1,33 @@
-const db = require('./../models');
-let jwt = require("jsonwebtoken");
-
-function getToken(str) {
-    const token = jwt.sign(JSON.stringify(str), process.env.ACCESS_KEY_TOKEN);
-    return token;
-}
-
-function verifyToken(str) {
-    const token = jwt.verify(str, process.env.ACCESS_KEY_TOKEN);
-    return token;
-}
-
+const db = require("./../models");
 /**
  * create a new post
  *  @param {*} req
  *  @param {*} res
  *  @request
  */
-
 exports.createPost = async function (req, res) {
     try {
-        const token = verifyToken((req.headers.authorization.split(' ')[1]).toString());
-
-        const newpost = db.posts.create({
+        const newpost = await db.posts.create({
             title: req.body.title,
-            user_id: token.id
-        })
-
+            user_id: req.user_id,
+        });
         return res.json({
-            status: 'success',
-            message: 'post created successfully'
-        })
+            status: "success",
+            message: req.name + " created a post successfully !!",
+            data: {
+                postid: newpost.id,
+                username: req.name,
+                title: newpost.title,
+            },
+        });
     } catch (err) {
         console.error(err);
         return res.json({
-            status: 'error',
-            message: 'internal server error'
-        })
+            status: "error",
+            message: "internal server error",
+        });
     }
-}
+};
 
 /**
  * delete post methoud
@@ -48,19 +37,17 @@ exports.createPost = async function (req, res) {
  */
 exports.deletePost = async function (req, res) {
     try {
-        const token = verifyToken((req.headers.authorization.split(' ')[1]).toString());
-
-        const newpost = db.posts.destroy({ where: { userid: token.id } })
-
+        // we will  later set condition for user can only delete commment done by that user not any external user 
+        const newpost = db.posts.destroy({ where: { user_id: req.params.id } });
         return res.json({
-            status: 'success',
-            message: 'comment deleted !!'
-        })
+            status: "success",
+            message: req.name + " deleted a post successfully !!",
+        });
     } catch (err) {
         console.error(err);
         return res.json({
-            status: 'error',
-            message: 'internal server error'
-        })
+            status: "error",
+            message: "internal server error",
+        });
     }
-}
+};

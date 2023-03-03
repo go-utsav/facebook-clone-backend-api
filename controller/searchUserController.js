@@ -9,7 +9,14 @@ const db = require('./../models');
 
 exports.searchUser = async function (req, res) {
     try {
-        const user = await db.users.findAll({ where: { firstname: req.body.firstname, lastname: req.body.lastname } });
+
+        //
+        const user = await db.users.findAll({
+            where: {
+
+                firstname: req.body.search, lastname: req.body.search
+            }
+        });
         if (!user) {
             return res.json({
                 status: 'success',

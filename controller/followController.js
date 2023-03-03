@@ -1,9 +1,8 @@
 const db = require('./../models');
-const jwt = require('jsonwebtoken');
-
-function verifyToken(str) {
-    const token = jwt.verify(str, process.env.ACCESS_KEY_TOKEN);
-    return token;
+async function getdata(myid) {
+    const rawdata = await db.users.findOne({ where: { id: myid } });
+    const clendata = JSON.parse(JSON.stringify(rawdata));
+    return clendata.firstname + ' ' + clendata.lastname;
 }
 /**
  * follow user 
@@ -11,21 +10,29 @@ function verifyToken(str) {
  * @param {*} res
  * @request
  */
-
 exports.followUser = async function (req, res) {
     try {
-        const token = verifyToken(req.headers.authorization.split(' ')[1]);
-        console.log(token);
-        const user = await db.followers.create({
-            userid: token.id,
-            targetuserid: req.body.targetuserid
+        const targertuser = await getdata(req.params.id);
+        const finduser = await db.followers.findOne({
+            userid: req.user_id,
+            targetuserid: req.params.id
         });
+        if (finduser) {
+            return res.json({
+                status: 'success',
+                message: req.name + ' is aleady following the user ' + targertuser
+            })
+        } else {
+            const user = await db.followers.create({
+                userid: req.user_id,
+                targetuserid: req.params.id
+            });
 
-        return res.json({
-            status: 'success',
-            message: 'following... '
-        });
-
+            return res.json({
+                status: 'success',
+                message: req.name + ' started following ' + targertuser
+            });
+        }
     } catch (e) {
         console.error(e);
         return res.json({
@@ -41,21 +48,19 @@ exports.followUser = async function (req, res) {
  * @param {*} res
  * @request
  */
-
 exports.unfollowUser = async function (req, res) {
     try {
-        const token = verifyToken(req.headers.authorization.split(' ')[1]);
-        console.log(token);
+        const targertuser = await getdata(req.params.id);
         const user = await db.followers.destroy({
             where: {
-                userid: token.id,
-                targetuserid: req.body.targetuserid
+                userid: req.user_id,
+                targetuserid: req.params.id
             }
         });
 
         return res.json({
             status: 'success',
-            message: 'unfollowed... '
+            message: req.name + ' has unfollowed ' + targertuser
         });
 
     } catch (e) {

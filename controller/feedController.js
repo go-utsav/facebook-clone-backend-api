@@ -10,10 +10,11 @@ const db = require('./../models');
 exports.feed = async (req, res) => {
     try {
 
-        const postTitle = await db.posts.findAll({});
-        const postarray = JSON.stringify(postTitle);
-        const cleandata = JSON.parse(postarray);
-        console.log(cleandata.length);
+        const postTitle = await db.posts.findAll({ raw: true });
+        console.log(postTitle);
+        // const postarray = JSON.stringify(postTitle);
+        // const cleandata = JSON.parse(postarray);
+        // console.log(cleandata.length);
         // const cleandata = JSON.parse(JSON.stringify(postTitle));
         // // console.log(postTitle.toString());
 

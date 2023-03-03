@@ -1,16 +1,4 @@
 const db = require('./../models');
-const jwt = require('jsonwebtoken');
-
-function getToken(str) {
-    const token = jwt.sign(JSON.stringify(str), process.env.ACCESS_KEY_TOKEN);
-    return token;
-}
-
-function verifyToken(str) {
-    const token = jwt.verify(str, process.env.ACCESS_KEY_TOKEN);
-    return token;
-}
-
 /**
  * create comment methoud
  * @param {*} req
@@ -20,16 +8,25 @@ function verifyToken(str) {
 
 exports.addComment = async function (req, res) {
     try {
-        const token = verifyToken((req.headers.authorization.split(' ')[1]).toString());
-
-        const newpost = db.comments.create({
-            user_id: token.id,
+        const newpost = await db.comments.create({
+            user_id: req.user_id,
             post_id: req.body.post_id,
             caption: req.body.caption,
         })
+        const postid = await db.posts.findOne({ where: { id: req.body.post_id } });
+        const cleanpostid = JSON.parse(JSON.stringify(postid));
+        const userid = await db.users.findOne({ where: { id: cleanpostid.user_id } });
+        const cleanuserid = JSON.parse(JSON.stringify(userid));
+        const postusername = cleanuserid.firstname + " " + cleanuserid.lastname;
+        //    const postusername = await db.users.findOne({ where: { id: postid.name } });
         return res.json({
             status: 'success',
-            message: 'comment added successfully'
+            message: req.name + ' added comment to ' + postusername + ' post successfully',
+            data: {
+                post_id: req.body.post_id,
+                username: req.name,
+                comment: req.body.caption
+            }
         })
     } catch (err) {
         console.error(err);
@@ -48,10 +45,7 @@ exports.addComment = async function (req, res) {
  */
 exports.deleteComment = async function (req, res) {
     try {
-        const token = verifyToken((req.headers.authorization.split(' ')[1]).toString());
-
-        const newpost = db.comments.destroy({ where: { userid: token.id } })
-
+        const newpost = db.comments.destroy({ where: { user_id: req.params.id } }) //later we will add postid for delete specific comment from user
         return res.json({
             status: 'success',
             message: 'comment deleted !!'
