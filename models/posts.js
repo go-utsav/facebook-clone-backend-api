@@ -21,5 +21,28 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "posts",
     }
   );
+
+  posts.associate = function (models) {
+    // define association here
+    posts.belongsTo(models.users, {
+      foreignKey: 'user_id',
+      as: 'user'
+    });
+    posts.hasMany(models.comments, {
+      as: 'postcomment',
+      foreignKey: 'post_id',
+    });
+
+
+    // posts.belongsTo(models.likes, {
+    //   as: 'postlike',
+    //   foreignKey: 'post_id',
+    // });
+
+    // posts.belongsTo(models.media, {
+    //   as: 'postmedia',
+    //   foreignKey: 'post_id',
+    // });
+  }
   return posts;
 };

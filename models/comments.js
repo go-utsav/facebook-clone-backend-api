@@ -22,5 +22,19 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "comments",
     }
   );
+
+  comments.associate = function (models) {
+    // define association here
+    comments.belongsTo(models.posts, {
+      as: 'commentpost',
+      foreignKey: 'post_id',
+    });
+
+    comments.belongsTo(models.users, {
+      as: 'commentuser',
+      foreignKey: 'user_id',
+    })
+  }
+
   return comments;
 };

@@ -60,3 +60,26 @@ exports.deleteComment = async function (req, res) {
         });
     }
 };
+
+
+// /**
+//  * get all comment methoud
+//  * @param {*} req
+//  * @param {*} res
+//  * @request
+//  */
+// exports.deleteComment = async function (req, res) {
+//     try {
+//         const newpost = db.comments.destroy({ where: { user_id: req.params.id } }); //later we will add postid for delete specific comment from user
+//         return res.json({
+//             status: "success",
+//             message: "comment deleted !!",
+//         });
+//     } catch (err) {
+//         console.error(err);
+//         return res.json({
+//             status: "error",
+//             message: "internal server error",
+//         });
+//     }
+// };

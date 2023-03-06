@@ -32,20 +32,11 @@ exports.searchUser = async function (req, res) {
             }
         });
 
+        return res.json({
+            status: "success",
+            data: username,
+        });
 
-
-        if (!username) {
-            return res.json({
-                status: "success",
-                data: "no user found",
-            });
-        } else {
-
-            return res.json({
-                status: "success",
-                data: username,
-            });
-        }
     } catch (e) {
         console.error(e);
         return res.json({

@@ -79,3 +79,39 @@ exports.signIn = async function (req, res, next) {
         });
     }
 };
+
+/**
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+
+exports.getuserpost = async function (req, res, next) {
+    try {
+
+        const getusers = await db.users.findAll({
+            where: { id: req.user_id },
+            include: [
+                {
+                    model: db.posts,
+                    as: 'post'
+                }
+            ]
+        });
+
+        return res.json({
+            status: "success",
+            message: "users found",
+            data: {
+                users: getusers
+            }
+        })
+
+    } catch (err) {
+        console.error(err);
+        return res.json({
+            status: 'error',
+            message: 'internal server error',
+        });
+    }
+}

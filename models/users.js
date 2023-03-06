@@ -24,5 +24,27 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "users",
     }
   );
+
+  users.associate = function (models) {
+    users.hasMany(models.posts, {
+      foreignKey: "user_id",
+      as: 'post'
+    });
+
+    users.hasMany(models.comments, {
+      as: 'usercomment',
+      foreignKey: 'user_id'
+    });
+
+    // users.hasOne(models.likes, {
+    //   as: 'userlike',
+    //   foreignKey: 'user_id'
+    // })
+
+    // users.hasOne(models.media, {
+    //   as: 'usermedia',
+    //   foreignKey: 'user_id'
+    // })
+  }
   return users;
 };
