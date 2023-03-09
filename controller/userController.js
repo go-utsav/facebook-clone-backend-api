@@ -14,7 +14,7 @@ exports.signUp = async function (req, res) {
             firstname: req.body.firstname,
             lastname: req.body.lastname,
             email: req.body.email,
-            password: md5(req.body.password),
+            password: req.body.password,
             mobileno: req.body.mobileno,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -32,10 +32,10 @@ exports.signUp = async function (req, res) {
             },
         });
     } catch (err) {
-        console.error(err);
+        // console.error(err);
         return res.json({
             status: "error",
-            message: "internal server error",
+            message: "Internal Server Error ",
         });
     }
 };
